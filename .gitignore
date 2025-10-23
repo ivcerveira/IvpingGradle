@@ -1,0 +1,12 @@
+# Ignorar pasta de compilação do IntelliJ IDEA
+/out/
+
+# Ignorar arquivos do Gradle que não devem ir para o repositório
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+
+# Arquivos de configuração locais do IntelliJ IDEA (opcional)
+.idea/
+*.iml
