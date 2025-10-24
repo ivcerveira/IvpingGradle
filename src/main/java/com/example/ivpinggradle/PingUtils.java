@@ -35,9 +35,9 @@ public class PingUtils {
         try (FileWriter writer = new FileWriter(batFile)) {
             writer.write(sb.toString());
         } catch (IOException e) {
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
-            return;
+            //e.printStackTrace();
+            throw new RuntimeException(e);
+            //return;
         }
 
         try {
