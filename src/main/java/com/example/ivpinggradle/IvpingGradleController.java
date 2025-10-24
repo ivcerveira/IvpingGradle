@@ -17,10 +17,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class IvpingGradleController {
-
-    // ===========================
-    // Constantes e variáveis
-    // ===========================
     private static final String DATA_FOLDER = "Ivping_data";
     private static final String EXCEL_FILE_NAME = "data_hosts.xlsx";
     private static final String SSH_BASE_URL = "https://s6006as3039.petrobras.biz/cgi-bin/ssh.sh?";
@@ -48,7 +44,6 @@ public class IvpingGradleController {
     private void initialize() {
         setupTableColumns();
         loadExcelData();
-
         FilteredList<HostData> filteredData = new FilteredList<>(dataList, p -> true);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(hostData -> {
@@ -73,7 +68,7 @@ public class IvpingGradleController {
     @FXML
     private void onClearClicked() {
         txtSearch.clear();
-        txtSearch.requestFocus(); // devolve o foco ao campo de pesquisa
+        txtSearch.requestFocus();
     }
 
     @FXML
@@ -204,12 +199,11 @@ public class IvpingGradleController {
 
         String hostName = selectedHost.host();
 
-        if (!hostName.matches("^(SW|RT).*")) {   // <-- novo
+        if (!hostName.matches("^(SW|RT).*")) {
             System.out.println("Apenas Switch e Roteador");
             return;
         }
 
-        //String url = "https://s6006as3039.petrobras.biz/cgi-bin/ssh.sh?" + hostName;
         String url = SSH_BASE_URL + hostName;
 
         try {
