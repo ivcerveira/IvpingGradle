@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class IvpingGradleController {
     //private static final String DATA_FOLDER = "Ivping_data";
-    private static final String DATA_FOLDER = "Ivp_data";
+    private static final String DATA_FOLDER = "Ivpinggradle_data";
     private static final String EXCEL_FILE_NAME = "data_hosts.xlsx";
     private static final String SSH_BASE_URL = "https://s6006as3039.petrobras.biz/cgi-bin/ssh.sh?";
 
@@ -106,18 +106,15 @@ public class IvpingGradleController {
     }
 
     private void loadExcelData() {
-        //String localAppData = System.getenv("LOCALAPPDATA");
-        String localAppData = System.getenv("APPDATA");
+        String roamingAppData = System.getenv("APPDATA");
         String filePath;
 
-        if (localAppData != null && !localAppData.isBlank()) {
-            filePath = localAppData + File.separator + DATA_FOLDER + File.separator + EXCEL_FILE_NAME;
+        if (roamingAppData != null && !roamingAppData.isBlank()) {
+            filePath = roamingAppData + File.separator + DATA_FOLDER + File.separator + EXCEL_FILE_NAME;
         } else {
             String userHome = System.getProperty("user.home");
-            //filePath = userHome + File.separator + "AppData" + File.separator + "Local" +
             filePath = userHome + File.separator + "AppData" + File.separator + "Roaming" +
-                    //File.separator + DATA_FOLDER + File.separator + "data2_hosts.xlsx";// comparar com original no ChatGPT
-                    File.separator + DATA_FOLDER + File.separator + "data_hosts.xlsx";
+                    File.separator + DATA_FOLDER + File.separator + EXCEL_FILE_NAME;
         }
 
         File excelFile = new File(filePath);

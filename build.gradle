@@ -39,7 +39,6 @@ javafx {
 
 dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.4.0'
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
@@ -56,7 +55,20 @@ jlink {
     }
 }
 
-
 jlinkZip {
     group = 'distribution'
+}
+
+
+tasks.register('fatJar', Jar) {
+    archiveClassifier = 'fat'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    from {
+        // inclui classes compiladas
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
