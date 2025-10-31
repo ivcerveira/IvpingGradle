@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class IvpingGradleController {
-    //private static final String DATA_FOLDER = "Ivping_data";
     private static final String DATA_FOLDER = "Ivpinggradle_data";
     private static final String EXCEL_FILE_NAME = "data_hosts.xlsx";
     private static final String SSH_BASE_URL = "https://s6006as3039.petrobras.biz/cgi-bin/ssh.sh?";
@@ -64,6 +65,9 @@ public class IvpingGradleController {
         if (!dataList.isEmpty()) {
             tableView.getSelectionModel().selectFirst();
         }
+
+        setupContextMenu(); // 👈 adiciona o menu de contexto
+
     }
 
     @FXML
@@ -217,4 +221,69 @@ public class IvpingGradleController {
             alert.showAndWait();
         }
     }
+
+
+    private void setupContextMenu() {
+        // Cria o menu de contexto
+        ContextMenu contextMenu = new ContextMenu();
+
+        contextMenu.getItems().addAll(
+                getCopyHostnameItem(),
+                getCopyIpItem(),
+                getCopyLocationItem()
+        );
+
+        // Aplica o menu em cada linha da TableView
+        tableView.setRowFactory(tv -> {
+            TableRow<HostData> row = new TableRow<>();
+            row.setOnContextMenuRequested(event -> {
+                if (!row.isEmpty()) {
+                    tableView.getSelectionModel().select(row.getIndex()); // garante que a linha clicada fique selecionada
+                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
+                }
+            });
+            return row;
+        });
+    }
+
+    private MenuItem getCopyIpItem() {
+        MenuItem copyIpItem = new MenuItem("Copiar IP");
+        copyIpItem.setOnAction(event -> {
+            HostData selected = tableView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                copyToClipboard(selected.ip());
+            }
+        });
+        return copyIpItem;
+    }
+
+    private MenuItem getCopyHostnameItem() {
+        MenuItem copyHostItem = new MenuItem("Copiar Hostname");
+        copyHostItem.setOnAction(event -> {
+            HostData selected = tableView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                copyToClipboard(selected.host());
+            }
+        });
+        return copyHostItem;
+    }
+
+    private MenuItem getCopyLocationItem() {
+        MenuItem copyLocationItem = new MenuItem("Copiar Location");
+        copyLocationItem.setOnAction(event -> {
+            HostData selected = tableView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                copyToClipboard(selected.location());
+            }
+        });
+        return copyLocationItem;
+    }
+
+    private void copyToClipboard(String text) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(text);
+        clipboard.setContent(content);
+    }
+
 }
