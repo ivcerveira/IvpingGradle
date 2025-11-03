@@ -25,7 +25,7 @@ public class IvpingGradleController {
 
     private final ObservableList<HostData> dataList = FXCollections.observableArrayList();
     public MenuItem menuClose;
-    public Button btnPing;
+    public Button pingButton;
 
     @FXML
     private TableView<HostData> tableView;
@@ -66,7 +66,7 @@ public class IvpingGradleController {
             tableView.getSelectionModel().selectFirst();
         }
 
-        setupContextMenu(); // 👈 adiciona o menu de contexto
+        setupContextMenu();
 
     }
 
@@ -205,7 +205,7 @@ public class IvpingGradleController {
         String hostName = selectedHost.host();
 
         if (!hostName.matches("^(SW|RT).*")) {
-            System.out.println("Apenas Switch e Roteador");
+            showWarning();
             return;
         }
 
@@ -222,9 +222,16 @@ public class IvpingGradleController {
         }
     }
 
+    private void showWarning() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Conexão SSH não disponível");
+        alert.setHeaderText(null);
+        alert.setContentText("Apenas equipamentos de rede (SW/RT) suportam acesso SSH.");
+        alert.initOwner(pingButton.getScene().getWindow());
+        alert.showAndWait();
+    }
 
     private void setupContextMenu() {
-        // Cria o menu de contexto
         ContextMenu contextMenu = new ContextMenu();
 
         contextMenu.getItems().addAll(
@@ -285,5 +292,4 @@ public class IvpingGradleController {
         content.putString(text);
         clipboard.setContent(content);
     }
-
 }

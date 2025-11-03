@@ -2,6 +2,7 @@ module com.example.ivpinggradle {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.apache.poi.ooxml;
+    //noinspection Java9RedundantRequiresStatement
     requires java.desktop;
 
 

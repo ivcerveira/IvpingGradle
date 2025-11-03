@@ -29,7 +29,7 @@
                 </Menu>
             </MenuBar>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
-                <Button fx:id="btnPing" mnemonicParsing="false" onAction="#onPingClicked" text="Ping" />
+                <Button fx:id="pingButton" mnemonicParsing="false" onAction="#onPingClicked" text="Ping" />
                 <CheckBox fx:id="chkPingContinuous" text="-t" />
                 <Pane prefWidth="10.0" />
                 <Button fx:id="btnSsh" mnemonicParsing="false" onAction="#onSshClicked" text="SSH" />
