@@ -10,17 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 public class IvpingGradleController {
-    private static final String DATA_FOLDER = "Ivpinggradle_data";
-    private static final String EXCEL_FILE_NAME = "data_hosts.xlsx";
     private static final String SSH_BASE_URL = "https://s6006as3039.petrobras.biz/cgi-bin/ssh.sh?";
 
     private final ObservableList<HostData> dataList = FXCollections.observableArrayList();
@@ -45,7 +36,11 @@ public class IvpingGradleController {
     @FXML
     private void initialize() {
         setupTableColumns();
-        loadExcelData();
+
+        // NOVA CHAMADA
+        ExcelHostLoader excelLoader = new ExcelHostLoader();
+        dataList.addAll(excelLoader.loadHosts());
+
         FilteredList<HostData> filteredData = new FilteredList<>(dataList, p -> true);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(hostData -> {
@@ -62,12 +57,8 @@ public class IvpingGradleController {
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
         tableView.setItems(sortedData);
 
-        if (!dataList.isEmpty()) {
-            tableView.getSelectionModel().selectFirst();
-        }
-
+        if (!dataList.isEmpty()) {tableView.getSelectionModel().selectFirst();}
         setupContextMenu();
-
     }
 
     @FXML
@@ -107,63 +98,6 @@ public class IvpingGradleController {
                 colLocation.setPrefWidth(remainingWidth);
             }
         });
-    }
-
-    private void loadExcelData() {
-        String roamingAppData = System.getenv("APPDATA");
-        String filePath;
-
-        if (roamingAppData != null && !roamingAppData.isBlank()) {
-            filePath = roamingAppData + File.separator + DATA_FOLDER + File.separator + EXCEL_FILE_NAME;
-        } else {
-            String userHome = System.getProperty("user.home");
-            filePath = userHome + File.separator + "AppData" + File.separator + "Roaming" +
-                    File.separator + DATA_FOLDER + File.separator + EXCEL_FILE_NAME;
-        }
-
-        File excelFile = new File(filePath);
-        if (!excelFile.exists()) {
-            System.err.println("Arquivo nao encontrado: " + filePath);
-            return;
-        }
-
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                if (row != null) {
-                    String hostName = getCellValue(row.getCell(0));
-                    String ipAddress = getCellValue(row.getCell(1));
-                    String deviceLocation = getCellValue(row.getCell(2));
-                    dataList.add(new HostData(hostName, ipAddress, deviceLocation));
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String getCellValue(Cell cell) {
-        if (cell == null) return "";
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue().trim();
-            case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue().toString();
-                } else {
-                    return String.valueOf(cell.getNumericCellValue());
-                }
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                return cell.getCellFormula();
-            default:
-                return "";
-        }
     }
 
     @FXML

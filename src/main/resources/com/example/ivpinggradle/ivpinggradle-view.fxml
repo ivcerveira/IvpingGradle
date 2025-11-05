@@ -35,13 +35,13 @@
                 <Button fx:id="btnSsh" mnemonicParsing="false" onAction="#onSshClicked" text="SSH" />
                 <Pane prefWidth="10.0" />
                 <TextField fx:id="txtSearch" prefWidth="200.0" promptText="Pesquisar..." />
-                <Button mnemonicParsing="false" onAction="#onClearClicked" text="✖" style="-fx-font-size: 14px; -fx-text-fill: gray;" />
+                <Button mnemonicParsing="false" onAction="#onClearClicked" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="✖" />
 
             </ToolBar>
         </VBox>
     </top>
     <center>
-        <TableView fx:id="tableView" BorderPane.alignment="CENTER">
+        <TableView fx:id="tableView" stylesheets="@MyTheme.css" BorderPane.alignment="CENTER">
             <columns>
                 <TableColumn fx:id="colHost" prefWidth="75.0" text="Hostname" />
                 <TableColumn fx:id="colIp" prefWidth="75.0" text="IP Address" />

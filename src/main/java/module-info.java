@@ -4,6 +4,8 @@ module com.example.ivpinggradle {
     requires org.apache.poi.ooxml;
     //noinspection Java9RedundantRequiresStatement
     requires java.desktop;
+    //noinspection Java9RedundantRequiresStatement
+    requires java.logging;
 
 
     opens com.example.ivpinggradle to javafx.fxml;
